@@ -6,7 +6,7 @@ var logger = require('morgan');
 var mongoose = require("mongoose");
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
-var bodyParser = require('body-parser')
+var bodyparser = require('body-parser')
 var User = require('./models/User');  
 
 var indexRouter = require('./routes/index');
@@ -27,8 +27,8 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 var url = "mongodb://localhost:27017/social_network";
@@ -39,7 +39,7 @@ mongoose.connect(url, (error) => {
 });
 
 app.use('/', indexRouter);
-app.use('/user', usersRouter);
+app.use('/', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

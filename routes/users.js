@@ -4,15 +4,20 @@ var passport = require('passport');
 
 /* GET users listing. */
 
-router.get('/register', function(request, response) {
+router.get('/user/register', function(request, response) {
   response.render('users/register');
 })
 
-router.get('/login', function(request, response, next) {
+router.post('/user/register', function(request, response) {
+  console.log(request.body);
+})
+
+router.get('/user/login', function(request, response, next) {
   response.render('users/login');
 });
 
-router.post('/login', function(request, response) {
+router.post('/user/login', function(request, response) {
+  console.log(request.body)
   passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/user/login',
