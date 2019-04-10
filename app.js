@@ -1,7 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require("mongoose");
 var passport = require('passport');
@@ -28,7 +27,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(logger('dev'));
 app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 var url = "mongodb://localhost:27017/social_network";
