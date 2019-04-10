@@ -32,7 +32,8 @@ function createUser(newUser, password, request, response) {
     User.register(newUser, password, (error, user) => {
         console.log('hello')
         if (error) {
-            console.log(error);
+            console.log(error)
+            request.flash("error", error.message)
             response.redirect("/");
         }
         else {
@@ -49,7 +50,7 @@ router.get('/user/login', function(request, response, next) {
 });
 
 router.post('/user/login', passport.authenticate('local', {
-        successRedirect: '/',
+        successRedirect: '/user/register',
         failureRedirect: '/user/login',
     }),
     (request, response) => {}
