@@ -12,7 +12,6 @@ router.get('/user/register', function(request, response) {
 
 //Get register post route
 router.post('/user/register', function(request, response) {
-    console.log(request.body);
     if (request.body.email 
         && request.body.firstname
         && request.body.lastname
@@ -28,18 +27,15 @@ router.post('/user/register', function(request, response) {
 })
 
 function createUser(newUser, password, request, response) {
-    console.log('create user', newUser)
     User.register(newUser, password, (error, user) => {
-        console.log('hello')
         if (error) {
-            console.log(error)
-            request.flash("error", error.message)
-            response.redirect("/");
+            request.flash('errors', error.message);
+            response.redirect("/user/register");
         }
         else {
             passport.authenticate("local")(request, response , function() {
-                console,log("Created User");
-                response.redirect("/");
+                request.flash('success', "Success! You are registered and logged in!")
+                response.redirect("/user/login");
             })
         }
     })
