@@ -9,6 +9,13 @@
     </head>
     <body>
         <h1>Sign Up</h1>
+        <div class="container">
+            <% if( errors && errors.length > 0 ) { %>
+                <div class="alert alert-danger" role="alert">
+                    <% errors %>
+                </div>
+            <% } %>
+        </div>
         <form id="form-signup" method="POST" class="form-horizontal" action="/user/register">
             <div class="form-group">
                 <label for="email" class="control-label col-sm-3">Email Address</label>

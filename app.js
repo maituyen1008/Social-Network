@@ -6,7 +6,7 @@ var mongoose = require("mongoose");
 var passport = require('passport');
 var expressSession = require('express-session');
 var LocalStrategy = require('passport-local');
-var bodyparser = require('body-parser')
+var bodyparser = require('body-parser');
 var User = require('./models/User');  
 var flash = require('connect-flash');
 
@@ -17,14 +17,14 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.engine('html',  require('ejs').renderFile);
-app.set('view engine', 'html');
+app.set('view engine', 'ejs');
 
 app.use(
     expressSession({
         secret: "secretKey",
         resave: false,
         saveUninitialized: false,
+        cookie: { maxAge: 60000 },
     })
 );
 
@@ -49,11 +49,11 @@ mongoose.connect(url, (error) => {
     console.log('Connect success!')
 });
 
-app.use((req, res, next) => {
-    res.locals.user = req.user;
-    res.locals.login = req.isAuthenticated();
-    res.locals.error = req.flash("error");
-    res.locals.success = req.flash("success");
+app.use((request, response, next) => {
+    response.locals.user = request.user;
+    response.locals.login = request.isAuthenticated();
+    response.locals.errors = request.flash("errors");
+    response.locals.success = request.flash("success");
     next();
 });
 
