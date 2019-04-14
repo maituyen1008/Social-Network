@@ -10,7 +10,7 @@ var bodyparser = require('body-parser');
 var User = require('./models/User');  
 var flash = require('connect-flash');
 
-var indexRouter = require('./routes/index');
+var postsRouter = require('./routes/posts');
 var usersRouter = require('./routes/users');
 
 var app = express();
@@ -57,7 +57,7 @@ app.use((request, response, next) => {
     next();
 });
 
-app.use('/', indexRouter);
+app.use('/', postsRouter);
 app.use('/', usersRouter);
 
 // catch 404 and forward to error handler

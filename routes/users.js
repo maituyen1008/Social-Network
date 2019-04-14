@@ -5,6 +5,14 @@ var User = require('../models/User');
 
 /* GET users listing. */
 
+const isLoggedIn = (request, response, next) => {
+    if (request.isAuthenticated()) {
+        return next();
+    }
+    request.flash('errors', "You need to logged in to do that!");
+    response.redirect('/user/login');
+}
+
 //Get register get route
 router.get('/user/register', function(request, response) {
     response.render('users/register');
@@ -47,7 +55,7 @@ router.get('/user/login', function(request, response, next) {
 
 router.post('/user/login', passport.authenticate('local', {
         successRedirect: '/user/register',
-        failureRedirect: '/user/login',
+        failureRedirect: '/',
     }),
     (request, response) => {}
 )

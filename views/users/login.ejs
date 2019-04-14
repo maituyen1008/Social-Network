@@ -9,6 +9,11 @@
     </head>
     <body>
         <h1>Login</h1>
+        <% if( success && success.length > 0 ) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= success %>
+            </div>
+        <% } %>
         <div class="content">
             <form id="form-login" method="POST" action="/user/login" class="form-horizontal">
                 <div class="form-group">
