@@ -71,12 +71,12 @@ function createUser(newUser, password, request, response) {
     User.register(newUser, password, (error, user) => {
         if (error) {
             request.flash('errors', error.message);
-            response.redirect("/user/register");
+            response.redirect("/user/login");
         }
         else {
             passport.authenticate("local")(request, response , function() {
                 request.flash('success', "Success! You are registered and logged in!")
-                response.redirect("/user/login");
+                response.redirect("/");
             })
         }
     })
