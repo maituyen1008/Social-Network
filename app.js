@@ -9,7 +9,13 @@ var LocalStrategy = require('passport-local');
 var bodyparser = require('body-parser');
 var User = require('./models/User');  
 var flash = require('connect-flash');
-const socket = require("socket.io");
+var socket = require("socket.io");
+var port = process.env.PORT || 3000;
+var dotenv = require("dotenv");
+
+var onlineChatUsers = {};
+
+dotenv.config();
 
 var postsRouter = require('./routes/posts');
 var usersRouter = require('./routes/users');
@@ -24,8 +30,7 @@ app.use(
     expressSession({
         secret: "secretKey",
         resave: false,
-        saveUninitialized: false,
-        cookie: { maxAge: 60000 },
+        saveUninitialized: false
     })
 );
 
@@ -53,7 +58,7 @@ mongoose.connect(url, (error) => {
 app.use((request, response, next) => {
     response.locals.user = request.user;
     response.locals.login = request.isAuthenticated();
-    response.locals.errors = request.flash("errors");
+    response.locals.error = request.flash("error");
     response.locals.success = request.flash("success");
     next();
 });
@@ -61,20 +66,8 @@ app.use((request, response, next) => {
 app.use('/', postsRouter);
 app.use('/', usersRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+const server = app.listen(port, () => {
+    console.log("App is running on port " + port);
 });
 
 // Socket.io setup
