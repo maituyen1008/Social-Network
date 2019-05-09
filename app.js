@@ -9,6 +9,7 @@ var LocalStrategy = require('passport-local');
 var bodyparser = require('body-parser');
 var User = require('./models/User');  
 var flash = require('connect-flash');
+const socket = require("socket.io");
 
 var postsRouter = require('./routes/posts');
 var usersRouter = require('./routes/users');
@@ -74,6 +75,42 @@ app.use(function(err, req, res, next) {
     // render the error page
     res.status(err.status || 500);
     res.render('error');
+});
+
+// Socket.io setup
+const io = socket(server);
+
+const room = io.of("/chat");
+room.on("connection", socket => {
+    console.log("new user ", socket.id);
+
+    room.emit("newUser", { socketID: socket.id });
+
+    socket.on("newUser", data => {
+        if (!(data.name in onlineChatUsers)) {
+            onlineChatUsers[data.name] = data.socketID;
+            socket.name = data.name;
+            room.emit("updateUserList", Object.keys(onlineChatUsers));
+            console.log("Online users: " + Object.keys(onlineChatUsers));
+        }
+    });
+
+    socket.on("disconnect", () => {
+        delete onlineChatUsers[socket.name];
+        room.emit("updateUserList", Object.keys(onlineChatUsers));
+        console.log(`user ${socket.name} disconnected`);
+    });
+
+    socket.on("chat", data => {
+        console.log(data);
+        if (data.to === "Global Chat") {
+            room.emit("chat", data);
+        } else if (data.to) {
+            room.to(onlineChatUsers[data.name]).emit("chat", data);
+            room.to(onlineChatUsers[data.to]).emit("chat", data);
+        }
+        // console.log(`User ${data.name} sent a message: ${data.message}`);
+    });
 });
 
 module.exports = app;
